@@ -61,7 +61,7 @@ public class Routes extends RouteBuilder {
 
         // upload generated pdf files
         // IMPORTANT: To avoid corrupted pdf, MUST set binary to true
-        // from("file:{{doc.location}}?delay=1000&noop=true&includeExt=pdf")
+        // from("file:{{doc.location}}?delay=1000&noop=true&include=.*pdf")
         //         .to("ftp://{{ftp.username}}@{{ftp.host}}:{{ftp.port}}/htdocs/pdf?password={{ftp.password}}&binary=true")
         //         .log("Uploaded ${header.CamelFileName}");
     }
