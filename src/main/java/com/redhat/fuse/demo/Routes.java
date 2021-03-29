@@ -16,51 +16,19 @@
  */
 package com.redhat.fuse.demo;
 
-import java.util.function.Supplier;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.BindyType;
 import org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Routes extends RouteBuilder {
 
-    @Value("${timer.period}")
-    String timerPeriod;
-
-    @Value("${timer.delay}")   
-    String timerDelay;
-
-    @Value("${doc.location}")
-    String docLocation;
-
-    @Value("${ftp.host}")
-    String ftpHost;
-
-    @Value("${ftp.port}")
-    String ftpPort;
-  
-    @Value("${ftp.username}")
-    String ftpUsername;
-
-    @Value("${ftp.password}")
-    String ftpPassword;
-
-    @Value("${ftp.path}")
-    String ftpPath;
-
-    Supplier<String> generateBiz = () -> "timer:generateBiz?period=" + timerPeriod + "&delay=" + timerDelay;
-    Supplier<String> consumeCSV = () -> "file:" + docLocation + "/csv?delay=1000&noop=true";
-    Supplier<String> readPdf = () -> "file:" + docLocation + "?delay=1000&noop=true&include=.*pdf";
-    Supplier<String> uploadPdf = () -> "ftp://" + ftpUsername + "@" + ftpHost + ":" + ftpPort 
-                                                + ftpPath + "?password=" + ftpPassword + "&binary=true";
     @Override
     public void configure() throws Exception {
         // Generate some business objects with random data
-        from(generateBiz.get())
+        from("timer:generateBiz?period={{timer.period}}&delay={{timer.delay}}")
                 .log("Generating randomized businesses CSV data")
                 .process("businessGenerator")
                 // Marshal each business to CSV format
@@ -70,7 +38,7 @@ public class Routes extends RouteBuilder {
                 .to("file:{{doc.location}}/csv");
 
         // Consume business CSV files
-        from(consumeCSV.get())
+        from("file:{{doc.location}}/csv?delay=1000&noop=true")
                 .log("Reading business CSV data from ${header.CamelFileName}")
                 .unmarshal().bindy(BindyType.Csv, Business.class)
                 .split(body())
@@ -93,6 +61,8 @@ public class Routes extends RouteBuilder {
 
         // upload generated pdf files
         // IMPORTANT: To avoid corrupted pdf, MUST set binary to true
-        // from(readPdf.get()).to(uploadPdf.get()).log("Uploaded ${header.CamelFileName}");
+        // from("file:{{doc.location}}?delay=1000&noop=true&includeExt=pdf")
+        //         .to("ftp://{{ftp.username}}@{{ftp.host}}:{{ftp.port}}/htdocs/pdf?password={{ftp.password}}&binary=true")
+        //         .log("Uploaded ${header.CamelFileName}");
     }
 }
