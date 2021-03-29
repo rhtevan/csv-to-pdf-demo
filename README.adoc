@@ -3,9 +3,13 @@
 :image-prefix: /fuse7/
 :image-name-version: fuse-java-openshift:1.6
 
-= REST API Level 0 - Fuse Booster
+= CSV to PDF Demo - Fuse 7.6SB2 (Camel 2)
 
-The REST API Level 0 mission shows how to map business operations to a remote procedure call endpoint over HTTP by using a REST framework. This mission corresponds to Level 0 in the Richardson Maturity Model. 
+This demo code is developed by using the 'REST API Level 0 - Fuse Booster' project as the fundation which shows how to map business operations to a remote procedure call endpoint over HTTP by using a REST framework. It corresponds to Level 0 in the Richardson Maturity Model. 
+
+This demo will start with generating CSV file which contains 30 random business records per file in every 2 minutes, followed by grouping those records by their correspondent business entity, and then complete the pdf form provided by Service Canada, link:https://catalogue.servicecanada.gc.ca/content/EForms/en/CallForm.html?Lang=en&PDF=SC-NAS5050.pdf[SC-NAS5050]. At the end of the process, pdf files can be upload to designated ftp site. 
+
+This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation.  
 
 By using this Fuse booster, you can quickly prototype and flexibly design a REST API.
 
@@ -21,15 +25,37 @@ Use this booster to:
 
 You can run this booster in the following modes:
 
+* Standalone on your machine
 * Single-node OpenShift cluster
 * OpenShift Online at link:{launchURL}[]
-* Standalone on your machine
 
 The most effective way to use this booster is to deploy and run the project on OpenShift.
 
 For more details about running this booster on a single-node OpenShift cluster, CI/CD deployments, as well as the rest of the runtime, see the link:http://appdev.openshift.io/docs/spring-boot-runtime.html[Spring Boot Runtime Guide].
 
-IMPORTANT: This booster requires Java 8 JDK or later and Maven 3.3.x or later.
+IMPORTANT: This booster requires Java 8 JDK (Tested with OpenJDK 11) or later and Maven 3.3.x or later.
+
+== Running the booster standalone on your machine
+
+To run this booster as a standalone project on your local machine:
+
+. Download the project and extract the archive on your local filesystem.
+
+. Build the project:
++
+[source,bash,options="nowrap",subs="attributes+"]
+----
+$ cd PROJECT_DIR
+$ mvn clean package
+----
+. Run the services:
++
+[source,bash,options="nowrap",subs="attributes+"]
+----
+$ mvn spring-boot:run
+----
+. By default, the generated files can be found at 'target/doc' (Use 'Ctrl-C' to exist)
+. (Optional) Go to link:http://localhost:8080[] and then follow the instructions on that page.
 
 
 == Running the booster on a single-node OpenShift cluster
@@ -129,24 +155,3 @@ To deploy this booster directly to OpenShift Online when you create the project 
 . Follow the on-screen instructions to create a new *REST API Level 0* project by using the *Fuse* runtime.
 
 NOTE: As part of the process of creating this booster, link:{launchURL}[] sets up a project with a CI/CD deployment of this booster. You can see the status of this deployment in your single-node OpenShift cluster or OpenShift Online web console.
-
-== Running the booster standalone on your machine
-
-To run this booster as a standalone project on your local machine:
-
-. Download the project and extract the archive on your local filesystem.
-
-. Build the project:
-+
-[source,bash,options="nowrap",subs="attributes+"]
-----
-$ cd PROJECT_DIR
-$ mvn clean package
-----
-. Run the services:
-+
-[source,bash,options="nowrap",subs="attributes+"]
-----
-$ mvn spring-boot:run
-----
-. Go to link:http://localhost:8080[] and then follow the instructions on that page.
