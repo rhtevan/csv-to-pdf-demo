@@ -29,4 +29,3 @@ $ mvn clean package
 $ mvn spring-boot:run
 ----
 . By default, the generated files can be found at 'target/doc' (Use 'Ctrl-C' to exist)
-. (Optional) Go to link:http://localhost:8080[] and then follow the instructions on that page.
