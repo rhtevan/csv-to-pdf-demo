@@ -29,6 +29,7 @@ public class Routes extends RouteBuilder {
     public void configure() throws Exception {
         // Generate some business objects with random data
         from("timer:generateBiz?period={{timer.period}}&delay={{timer.delay}}")
+                .routeId("Generating CSV data")
                 .log("Generating randomized businesses CSV data")
                 .process("businessGenerator")
                 // Marshal each business to CSV format
@@ -39,6 +40,7 @@ public class Routes extends RouteBuilder {
 
         // Consume business CSV files
         from("file:{{doc.location}}/csv?delay=1000&noop=true")
+                .routeId("Load CSV data files")
                 .log("Reading business CSV data from ${header.CamelFileName}")
                 .unmarshal().bindy(BindyType.Csv, Business.class)
                 .split(body())
@@ -46,6 +48,7 @@ public class Routes extends RouteBuilder {
 
         // Aggregate businesses based on their stock ticker 
         from("direct:aggregateBiz")
+                .routeId("Aggregating business data")
                 .setHeader("biz", simple("${body.ticker}"))
                 .aggregate(simple("${body.ticker}"), new GroupedBodyAggregationStrategy())
                 .completionSize(3)
@@ -55,6 +58,7 @@ public class Routes extends RouteBuilder {
 
         // asynchronous processing
         from("seda:processed")
+                .routeId("Processing PDF files")
                 .setHeader(Exchange.FILE_NAME, simple("SC-NAS5050-${header.biz}-${exchangeId}.pdf"))
                 .process("nas5050Processor")
                 .log("Created ${header.CamelFileName}");
@@ -62,6 +66,7 @@ public class Routes extends RouteBuilder {
         // upload generated pdf files
         // IMPORTANT: To avoid corrupted pdf, MUST set binary to true
         // from("file:{{doc.location}}?delay=1000&noop=true&include=.*pdf")
+        //         .routeId("Updating PDF files")
         //         .to("ftp://{{ftp.username}}@{{ftp.host}}:{{ftp.port}}/htdocs/pdf?password={{ftp.password}}&binary=true")
         //         .log("Uploaded ${header.CamelFileName}");
     }

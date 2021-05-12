@@ -8,7 +8,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <fuse.bom.version>7.6.0.fuse-sb2-760028-redhat-00001</fuse.bom.version>
+    <fuse.bom.version>7.8.0.fuse-sb2-780048-redhat-00001</fuse.bom.version>
+    <jmx.prometheus.javaagent.version>0.15.0</jmx.prometheus.javaagent.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -49,8 +50,22 @@
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-ftp-starter</artifactId>
     </dependency>
+    <!-- activate JMX metrics for camel -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-management</artifactId>
+      <version>3.7.0.fuse-800004-redhat-00001</version>
+    </dependency>
+    <!-- prometheus dependency for metrics when running spring-boot:run -->
+    <dependency>
+      <groupId>io.prometheus.jmx</groupId>
+      <artifactId>jmx_prometheus_javaagent</artifactId>
+      <version>${jmx.prometheus.javaagent.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
+    <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
       <!-- Core plugins -->
       <plugin>
@@ -74,9 +89,11 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.jboss.redhat-fuse</groupId>
+        <!-- groupId>org.jboss.redhat-fuse</groupId -->
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${fuse.bom.version}</version>
+        <!-- version>${fuse.bom.version}</version -->
+        <version>2.4.2</version>
         <executions>
           <execution>
             <goals>
@@ -84,6 +101,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <agents>
+            <agent>
+            ${user.home}/.m2/repository/io/prometheus/jmx/jmx_prometheus_javaagent/${jmx.prometheus.javaagent.version}/jmx_prometheus_javaagent-${jmx.prometheus.javaagent.version}.jar=9779:${project.basedir}/src/main/resources/prometheus-config.yml
+            </agent>
+          </agents>
+        </configuration>
       </plugin>
     </plugins>
   </build>

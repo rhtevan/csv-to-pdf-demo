@@ -3,11 +3,11 @@
 :image-prefix: /fuse7/
 :image-name-version: fuse-java-openshift:1.6
 
-= CSV to PDF Demo - Fuse 7.6SB2 (Camel 2)
+= CSV to PDF Demo - Fuse 7.8.0 SB2 (Camel 2)
 
 This demo will start with generating CSV file which contains 30 random business records per file in every 2 minutes, followed by grouping those records by their correspondent business entity, and then complete the pdf form provided by Service Canada, link:https://catalogue.servicecanada.gc.ca/content/EForms/en/CallForm.html?Lang=en&PDF=SC-NAS5050.pdf[SC-NAS5050]. At the end of the process, pdf files can be upload to designated ftp site. 
 
-This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation.  
+This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation. Integrated with Prometheus and Grafana, see xref:scripts/ReadMe.md[instructions]
 
 IMPORTANT: This demo requires Java 8 JDK (Tested with OpenJDK 11) or later and Maven 3.3.x or later.
 
