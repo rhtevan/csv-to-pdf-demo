@@ -50,10 +50,10 @@ docker stop prometheus
 docker rm prometheus
 docker rmi prom:v2.24.0 
 
-cd prometheus
+cd scripts/prometheus
 docker build -t prom:v2.24.0 .
 docker run -d --name prometheus --net primenet --ip 172.18.0.70 prom:v2.24.0
-cd ..
+cd ../..
 
 ```
 
@@ -69,10 +69,10 @@ docker stop grafana
 docker rm grafana
 docker rmi graf:7.3.7
 
-cd grafana
+cd scripts/grafana
 docker build -t graf:7.3.7 . 
 docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:7.3.7
-cd ..
+cd ../..
 
 ```
 
