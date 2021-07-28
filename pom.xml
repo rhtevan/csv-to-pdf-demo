@@ -63,6 +63,11 @@
       <version>${jmx.prometheus.javaagent.version}</version>
       <scope>provided</scope>
     </dependency>
+    <!-- fuse console -->
+    <dependency>
+      <groupId>io.hawt</groupId>
+      <artifactId>hawtio-springboot</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>

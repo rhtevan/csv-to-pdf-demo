@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/home/ezhang/.config/Code/User/globalStorage/redhat.vscode-camelk/java-dependencies-3.11.0/dependencies/*.jar"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
