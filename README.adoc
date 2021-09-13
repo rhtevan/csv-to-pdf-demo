@@ -9,7 +9,7 @@ This demo will start with generating CSV file which contains 30 random business 
 
 This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, and error handling capabilities, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation. Integrated with Prometheus and Grafana, see xref:scripts/ReadMe.md[instructions]
 
-To demonstrate error handling capabilities, the generated csv file(s) can be modified to inject malformatted data. Once the file processing route starts, the DeadLetterChannel error handler will move the malformatted file(s) to a designated directory and waiting for manual correction.   
+To demonstrate error handling capabilities, the generated csv file(s) can be modified to inject malformed: data. Once the file processing route starts, the DeadLetterChannel error handler will move the malformatted file(s) to a designated directory and waiting for manual correction.   
 
 Access the Red Hat Fuse Console from link:http://localhost:10001/hawtio[here]
 
