@@ -89,5 +89,8 @@ public class BusinessGenerator implements Processor {
         }
 
         exchange.getMessage().setBody(businesses);
+
+        // Randomly set failure indicator
+        if ((random.nextInt(7) + 3) % 3 == 0 ) exchange.getMessage().setHeader("failure", "true");
     }
 }

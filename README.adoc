@@ -7,11 +7,13 @@
 
 This demo will start with generating CSV file which contains 30 random business records per file in every 2 minutes, followed by grouping those records by their correspondent business entity, and then complete the pdf form provided by Service Canada, link:https://catalogue.servicecanada.gc.ca/content/EForms/en/Detail.html?Form=NAS5050[SC-NAS5050]. At the end of the process, pdf files can be upload to designated ftp site. 
 
-This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation. Integrated with Prometheus and Grafana, see xref:scripts/ReadMe.md[instructions]
+This demo showcases the OOTB (Out-Of-The-Box) support for EIPs (Enterprise Integration Pattern), such as Aggregator and Splitter, and error handling capabilities, by Red Hat Fuse as well as other capabilities like CSV file processing and PDF generation. Integrated with Prometheus and Grafana, see xref:scripts/ReadMe.md[instructions]
+
+To demonstrate error handling capabilities, the generated csv file(s) can be modified to inject malformatted data. Once the file processing route starts, the DeadLetterChannel error handler will move the malformatted file(s) to a designated directory and waiting for manual correction.   
 
 Access the Red Hat Fuse Console from link:http://localhost:10001/hawtio[here]
 
-IMPORTANT: This demo requires Java 8 JDK (Tested with OpenJDK 11) or later and Maven 3.3.x or later.
+IMPORTANT: This demo requires Java 8 JDK (Tested with OpenJDK 11) or later versions, and Maven 3.3.x or later versions.
 
 == Running the demo on your machine
 

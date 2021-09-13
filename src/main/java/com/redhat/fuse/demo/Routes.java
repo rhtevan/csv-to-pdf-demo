@@ -27,9 +27,32 @@ public class Routes extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+        // Simulating errors randomly
+        // interceptSendToEndpoint("file*")
+        //         .skipSendToOriginalEndpoint()
+        //         // If exchange message contains a 'failure' header, then send it to new endpoints
+        //         .when(simple("${header.failure} == 'true'"))
+        //         .to("log:SimulatingError?level=WARN&showBody=false&showExchangeId=true&showProperties=true")
+        //         // Throw a runtime exception to simulate error
+        //         .process(e -> {throw new UnsupportedOperationException("Simulated Error");});
+
+        // Context scoped error handler
+        errorHandler(
+                // OOTB DeadLetterChannel error handler divert messages after issue being fixed 
+                deadLetterChannel("file:{{doc.location}}/csv")
+                        .logStackTrace(false)
+                        .onPrepareFailure(e -> {
+                                // Fixing the application error programmatically
+                                e.getMessage().removeHeader("failure");
+                                e.removeProperty(Exchange.EXCEPTION_CAUGHT);
+                        })
+        );
+        
         // Generate some business objects with random data
         from("timer:generateBiz?period={{timer.period}}&delay={{timer.delay}}")
                 .routeId("Generating CSV data")
+                // Disable auto startup
+                .noAutoStartup()
                 .log("Generating randomized businesses CSV data")
                 .process("businessGenerator")
                 // Marshal each business to CSV format
@@ -41,10 +64,26 @@ public class Routes extends RouteBuilder {
         // Consume business CSV files
         from("file:{{doc.location}}/csv?delay=1000&noop=true")
                 .routeId("Load CSV data files")
+                // Disable auto startup
+                .noAutoStartup()
+                // Route scoped error handler
+                .errorHandler(
+                        // Move malformed csv file to a dedicated directory for manual correction   
+                        deadLetterChannel("direct:malformed")
+                                .onPrepareFailure(e -> {
+                                       e.getMessage()
+                                        .setHeader(Exchange.FILE_NAME, simple("projects-${exchangeId}-FIXME.csv"));
+                                })
+                )
                 .log("Reading business CSV data from ${header.CamelFileName}")
                 .unmarshal().bindy(BindyType.Csv, Business.class)
                 .split(body())
                 .to("direct:aggregateBiz");
+        
+        // Malformed data file handler route
+        from("direct:malformed")
+                .to("log:MalformedDataFile?level=Error&showBody=false&showExchangeId=true&showProperties=true")
+                .to("file://{{doc.location}}/malformed");
 
         // Aggregate businesses based on their stock ticker 
         from("direct:aggregateBiz")
@@ -68,6 +107,6 @@ public class Routes extends RouteBuilder {
         // from("file:{{doc.location}}?delay=1000&noop=true&include=.*pdf")
         //         .routeId("Uploading PDF files")
         //         .to("ftp://{{ftp.username}}@{{ftp.host}}:{{ftp.port}}/htdocs/pdf?password={{ftp.password}}&binary=true")
-        //         .log("Uploaded ${header.CamelFileName}");
+        //         .log("Uploaded ${header.CamelFileName}");   
     }
 }
